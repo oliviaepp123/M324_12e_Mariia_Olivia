@@ -1,0 +1,38 @@
+# Postet automatisch eine Checkliste als Kommentar, sobald ein Pull Request geöffnet wird.
+name: PR-Checkliste
+
+# 1) WANN läuft der Workflow? -> Nur wenn ein Pull Request geöffnet wird.
+on:
+  pull_request:
+    types: [opened]
+
+# 2) WAS darf der Workflow? -> Nur Kommentare auf Pull Requests schreiben, sonst nichts.
+permissions:
+  pull-requests: write
+
+jobs:
+  checklist:
+    name: Checkliste kommentieren
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # 3) WAS passiert? -> Die Action schreibt den Text unten als Kommentar in den PR.
+      - name: Checkliste als Kommentar posten
+        # Auf den vollen Commit-SHA von v5.0.0 gepinnt (ein Tag wie @v5 könnte verschoben werden)
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          reactions: rocket
+          body: |
+            👋 Hallo @${{ github.event.pull_request.user.login }}, danke für deinen Pull Request!
+
+            Bitte prüfe vor dem Merge diese Punkte:
+
+            - [ ] Ich habe meine Änderungen lokal getestet
+            - [ ] Die Beschreibung erklärt **was** geändert wurde und **warum**
+            - [ ] Keine Passwörter, Tokens oder privaten Daten im Code
+            - [ ] Die README ist aktualisiert (falls nötig)
+
+            📖 Details findest du in den [Beitragsrichtlinien](${{ github.server_url }}/${{ github.repository }}/blob/main/CONTRIBUTING.md).
+
+            <sub>🤖 Automatisch erstellt von GitHub Actions mit create-or-update-comment</sub>
