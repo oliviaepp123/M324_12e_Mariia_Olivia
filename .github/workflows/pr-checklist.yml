@@ -1,38 +1,38 @@
-# Postet automatisch eine Checkliste als Kommentar, sobald ein Pull Request geöffnet wird.
-name: PR-Checkliste
+# Posts a checklist as a comment when a pull request is opened.
+name: PR Checklist
 
-# 1) WANN läuft der Workflow? -> Nur wenn ein Pull Request geöffnet wird.
+# 1) WHEN does it run? -> Only when a pull request is opened.
 on:
   pull_request:
     types: [opened]
 
-# 2) WAS darf der Workflow? -> Nur Kommentare auf Pull Requests schreiben, sonst nichts.
+# 2) WHAT is it allowed to do? -> Only write comments on pull requests. Nothing else.
 permissions:
   pull-requests: write
 
 jobs:
   checklist:
-    name: Checkliste kommentieren
+    name: Post checklist
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      # 3) WAS passiert? -> Die Action schreibt den Text unten als Kommentar in den PR.
-      - name: Checkliste als Kommentar posten
-        # Auf den vollen Commit-SHA von v5.0.0 gepinnt (ein Tag wie @v5 könnte verschoben werden)
+      # 3) WHAT happens? -> The action posts the text below as a comment on the PR.
+      - name: Post checklist comment
+        # Pinned to the full commit SHA of v5.0.0 (a tag like @v5 can be moved)
         uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           issue-number: ${{ github.event.pull_request.number }}
           reactions: rocket
           body: |
-            👋 Hallo @${{ github.event.pull_request.user.login }}, danke für deinen Pull Request!
+            👋 Hi @${{ github.event.pull_request.user.login }}, thanks for your pull request!
 
-            Bitte prüfe vor dem Merge diese Punkte:
+            Please check these points before merging:
 
-            - [ ] Ich habe meine Änderungen lokal getestet
-            - [ ] Die Beschreibung erklärt **was** geändert wurde und **warum**
-            - [ ] Keine Passwörter, Tokens oder privaten Daten im Code
-            - [ ] Die README ist aktualisiert (falls nötig)
+            - [ ] I tested my changes locally
+            - [ ] The description explains **what** changed and **why**
+            - [ ] No passwords, tokens or private data in the code
+            - [ ] The README is updated (if needed)
 
-            📖 Details findest du in den [Beitragsrichtlinien](${{ github.server_url }}/${{ github.repository }}/blob/main/CONTRIBUTING.md).
+            📖 More details: [Contributing guide](${{ github.server_url }}/${{ github.repository }}/blob/main/CONTRIBUTING.md)
 
-            <sub>🤖 Automatisch erstellt von GitHub Actions mit create-or-update-comment</sub>
+            <sub>🤖 Posted automatically by GitHub Actions with create-or-update-comment</sub>
